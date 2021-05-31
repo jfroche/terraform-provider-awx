@@ -24,7 +24,7 @@ func dataSourceCredentialByID() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceCredentialByIDRead,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
+			"credential_id": &schema.Schema{
 				Type:        schema.TypeInt,
 				Required:    true,
 				Description: "Credential id",
@@ -47,7 +47,7 @@ func dataSourceCredentialByIDRead(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 
 	client := m.(*awx.AWX)
-	id := d.Get("id").(int)
+	id := d.Get("credential_id").(int)
 	cred, err := client.CredentialsService.GetCredentialsByID(id, map[string]string{})
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
