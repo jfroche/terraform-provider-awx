@@ -71,6 +71,12 @@ func resourceInventorySource() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			"source_vars": &schema.Schema{
+				Type:      schema.TypeString,
+				Default:   "",
+				Optional:  true,
+				StateFunc: normalizeJsonYaml,
+			},
 			"credential_id": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -100,6 +106,7 @@ func resourceInventorySourceCreate(ctx context.Context, d *schema.ResourceData, 
 		"source_project":   d.Get("source_project_id").(int),
 		"update_on_launch": d.Get("update_on_launch").(bool),
 		"source_path":      d.Get("source_path").(string),
+		"source_vars":      d.Get("source_vars").(string),
 		"overwrite":        d.Get("overwrite").(bool),
 	}, map[string]string{})
 	if err != nil {
@@ -129,6 +136,7 @@ func resourceInventorySourceUpdate(ctx context.Context, d *schema.ResourceData, 
 		"source_project":   d.Get("source_project_id").(int),
 		"update_on_launch": d.Get("update_on_launch").(bool),
 		"source_path":      d.Get("source_path").(string),
+		"source_vars":      d.Get("source_vars").(string),
 		"overwrite":        d.Get("overwrite").(bool),
 	}, nil)
 	if err != nil {
@@ -179,6 +187,7 @@ func setInventorySourceResourceData(d *schema.ResourceData, r *awx.InventorySour
 	d.Set("source", r.Source)
 	d.Set("source_project_id", r.SourceProject)
 	d.Set("source_path", r.SourcePath)
+	d.Set("source_vars", normalizeJsonYaml(r.SourceVars))
 
 	return d
 }
